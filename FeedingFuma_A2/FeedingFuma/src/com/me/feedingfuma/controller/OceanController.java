@@ -10,12 +10,14 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Pool;
 import com.me.feedingfuma.model.Fuma;
 import com.me.feedingfuma.model.Fuma.State;
+import com.me.feedingfuma.model.Level1;
 import com.me.feedingfuma.model.Ocean;
 import com.me.feedingfuma.model.OtherFish;
 
 public class OceanController {
 	Random rand = new Random();
-
+	int score = 0;
+	Level1 level;
 	enum Keys {
 		LEFT, RIGHT, UP, DOWN;
 	}
@@ -44,6 +46,7 @@ public class OceanController {
 
 	public OceanController(Ocean ocean) {
 		fishes = new ArrayList<OtherFish>();
+		level = new Level1();
 		this.ocean = ocean;
 		this.fuma = ocean.getFuma();
 		this.fishes = ocean.getFish();
@@ -97,26 +100,28 @@ public class OceanController {
 		
 		Rectangle fumaRect = rectPool.obtain();
 		fumaRect.set(fuma.getBounds().x, fuma.getBounds().y,
-				fuma.getBounds().width, fuma.getBounds().height);
+				fuma.getSize(), fuma.getSize());
 
 		fumaRect.x += fuma.getVelocity().x;
 		//fumaRect.y += fuma.getVelocity().y;
 		for (int i = 0 ; i < fishes.size() ; i ++) {
 			if (fumaRect.overlaps(fishes.get(i).getBounds())) {
 				fuma.setEatFish(true);
+				score += 20;
+				ocean.getLevel().setScore(score);
 				//fishes.get(i).setBeEaten(true);
 				fishes.remove(fishes.get(i));
 				ocean.setFish(fishes);
-				Gdx.app.log("Collide x", "fuma collide");
+				//Gdx.app.log("Collide x", "fuma collide");
 			}
 		}
 		fumaRect.x = fuma.getPosition().x;
 		//fumaRect.y = fuma.getPosition().y;
 
-		fuma.getPosition().add(fuma.getVelocity());
+		//fuma.getPosition().add(fuma.getVelocity());
 		fuma.getBounds().x = fuma.getPosition().x;
 		fuma.getBounds().y = fuma.getPosition().y;
-		fuma.getVelocity().mul(delta);
+		fuma.getVelocity().mul(1/delta);
 	}
 
 	private void processInput() {
@@ -231,7 +236,7 @@ public class OceanController {
 		}*/
 		
 		randomDir();
-		Gdx.app.log("number of fish", String.valueOf(fishes.size()));
+		//Gdx.app.log("number of fish", String.valueOf(fishes.size()));
 		for (int i = 0; i < fishes.size(); i++) {
 			if (fishes.get(i).getDir().equalsIgnoreCase("UP")) {
 				fishes.get(i).getVel().y = fishes.get(i).getSpeed();

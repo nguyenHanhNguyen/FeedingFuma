@@ -16,7 +16,7 @@ public class Fuma {
 		IDLE, SWIMMING, DIE;
 	}
 
-	public static float SIZE = 1f;
+	//public static float SIZE = 1f;
 	public static float SPEED = 2.5f;
 
 	Vector2 position = new Vector2();
@@ -27,13 +27,22 @@ public class Fuma {
 	String dir = new String();
 	boolean facingRight = true;
 	boolean eatFish = false;
-
+	float size = 1f;
+	
 	public Fuma(Vector2 position) {
 		this.position = position;
-		this.bounds.height = SIZE;
-		this.bounds.width = SIZE;
+		this.bounds.height = size;
+		this.bounds.width = size;
 	}
 
+    public void setSize(float size) {
+    	this.size = size;
+    }
+    
+    public float getSize() {
+    	return size;
+    }
+	
 	public boolean getEatFish() {
 		return eatFish;
 	}
