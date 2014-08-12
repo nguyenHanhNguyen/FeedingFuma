@@ -34,8 +34,8 @@ public class OtherFish {
 
 	public OtherFish(Vector2 position) {
 		this.position = position;
-		this.bounds.setX(position.x);
-		this.bounds.setY(position.y);
+		//this.bounds.setX(position.x);
+		//this.bounds.setY(position.y);
 	}
 
 	public boolean BeEaten() {
@@ -66,8 +66,9 @@ public class OtherFish {
 		return position;
 	}
 
-	public void setPosition(Vector2 position) {
-		this.position = position;
+	public void setPosition(int x, int y) {
+		position.x = x;
+		position.y = y;
 	}
 
 	public Vector2 getAcceleration() {
@@ -115,8 +116,8 @@ public class OtherFish {
 	}
 
 	public void setBounds(float width, float height) {
-		bounds.width = width;
-		bounds.height = height;
+		bounds.setWidth(width);
+		bounds.setHeight(height);
 
 	}
 

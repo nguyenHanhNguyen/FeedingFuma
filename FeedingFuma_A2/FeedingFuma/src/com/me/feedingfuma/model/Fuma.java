@@ -23,7 +23,7 @@ public class Fuma {
 	Vector2 acceleration = new Vector2();
 	Vector2 velocity = new Vector2();
 	Rectangle bounds = new Rectangle();
-	State state = State.IDLE;
+	public State state = State.IDLE;
 	String dir = new String();
 	boolean facingRight = true;
 	boolean eatFish = false;
@@ -86,6 +86,12 @@ public class Fuma {
 
 	public Rectangle getBounds() {
 		return bounds;
+	}
+	
+	public void setBounds(float width, float height) {
+		bounds.setWidth(width);
+		bounds.setHeight(height);
+
 	}
 
 	public State getState() {

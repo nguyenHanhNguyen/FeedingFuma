@@ -2,11 +2,16 @@ package com.me.feedingfuma.view;
 
 import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Rectangle;
 import com.me.feedingfuma.model.Fuma;
+import com.me.feedingfuma.model.Fuma.State;
 import com.me.feedingfuma.model.Level1;
 import com.me.feedingfuma.model.Ocean;
 import com.me.feedingfuma.model.OtherFish;
@@ -36,7 +41,8 @@ public class OceanRenderer {
 	private float ppuY; // pixels per unit on the Y axis
 	BitmapFont score = new BitmapFont();
 	Level1 level = new Level1();
-
+	ShapeRenderer debugRenderer = new ShapeRenderer();
+		
 	public void setSize(int w, int h) {
 		this.width = w;
 		this.height = h;
@@ -73,17 +79,23 @@ public class OceanRenderer {
 	public void render() {
 		spriteBatch.begin();
 		drawScore();
-		drawFuma();
+		if(ocean.getFuma().state != State.DIE) {
+			drawFuma();
+		}
 		drawOtherFish();
 		spriteBatch.end();
+		
+		drawDebug();
 	}
 
 	private void drawFuma() {
 		Fuma fuma = ocean.getFuma();
 		if (ocean.getLevel().getScore() < 100) {
 			fuma.setSize(1f);
+			fuma.setBounds(1f,1f);
 		} if(ocean.getLevel().getScore() > 100) {
 			fuma.setSize(1.2f);
+			fuma.setBounds(1.2f,1.2f);
 		}
 
 		if (fuma.isFacingRight()) {
@@ -101,8 +113,6 @@ public class OceanRenderer {
 
 	private void drawOtherFish() {
 		ArrayList<OtherFish> fish = ocean.getFish();
-		// Gdx.app.log("number of fish ocean renderer",
-		// String.valueOf(fish.size()));
 		for (int i = 0; i < fish.size(); i++) {
 			if (fish.get(i).getGenre() == Genre.YellowFish) {
 				spriteBatch.draw(yellowFishTexture, fish.get(i).getPosition().x
@@ -151,6 +161,29 @@ public class OceanRenderer {
 	private void drawScore() {
 		score.setColor(0.0f, 0.0f, 1.0f, 1.0f);
 		score.draw(spriteBatch, "Score " + ocean.getLevel().getScore(), 50, 700);
+	}
+	
+	private void drawDebug() {
+		debugRenderer.setProjectionMatrix(cam.combined);
+		debugRenderer.begin(ShapeType.Rectangle);
+		
+		ArrayList<OtherFish> fishes = ocean.getFish(); 
+		for (int i = 0 ; i < fishes.size() ; i++) {
+			Rectangle rect = fishes.get(i).getBounds();
+			debugRenderer.setColor(new Color(1, 0, 0, 1));
+			float x1 = fishes.get(i).getPosition().x + rect.x;
+			float y1 = fishes.get(i).getPosition().y + rect.y;
+			debugRenderer.rect(x1, y1, rect.width, rect.height);
+		}
+		
+		// render Bob
+		Fuma fuma = ocean.getFuma();
+		Rectangle rect = fuma.getBounds();
+		debugRenderer.setColor(new Color(0, 1, 0, 1));
+		float x1 = fuma.getPosition().x + rect.x;
+		float y1 = fuma.getPosition().y + rect.y;
+		debugRenderer.rect(x1, y1, rect.width, rect.height);
+		debugRenderer.end();
 	}
 
 	public void dispose() {

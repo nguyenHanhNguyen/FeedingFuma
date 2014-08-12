@@ -44,6 +44,8 @@ public class OceanController {
 		keys.put(Keys.DOWN, false);
 	}
 
+	ArrayList<Rectangle> otherFishRect = new ArrayList<Rectangle>();
+	
 	public OceanController(Ocean ocean) {
 		fishes = new ArrayList<OtherFish>();
 		level = new Level1();
@@ -85,46 +87,51 @@ public class OceanController {
 	}
 
 	public void update(float delta) {
-		detectCollision(delta);
 		updateFishRandom();
-		for(int i = 0 ; i < fishes.size() ; i++) {
-			fishes.get(i).update(delta);
+		if(fuma.state != State.SWIMMING) {
+			updateFuma();
+			fuma.update(delta);
+			detectCollision(delta);
 		}
-		updateFuma();
-		fuma.update(delta);
 		
 	}
 
 	private void detectCollision(float delta) {
+
 		fuma.getVelocity().mul(delta);
 		
 		Rectangle fumaRect = rectPool.obtain();
-		fumaRect.set(fuma.getBounds().x, fuma.getBounds().y,
-				fuma.getSize(), fuma.getSize());
+		fumaRect.set(fuma.getPosition().x, fuma.getPosition().y,
+				fuma.getBounds().width, fuma.getBounds().height);
 
-		fumaRect.x += fuma.getVelocity().x;
+		//fumaRect.x += fuma.getVelocity().x;
 		//fumaRect.y += fuma.getVelocity().y;
 		for (int i = 0 ; i < fishes.size() ; i ++) {
-			if (fumaRect.overlaps(fishes.get(i).getBounds())) {
+			Rectangle fishRect = new Rectangle();
+			fishRect.set(fishes.get(i).getPosition().x, fishes.get(i).getPosition().y,fishes.get(i).getBounds().width, fishes.get(i).getBounds().height);
+			if (fumaRect.overlaps(fishRect)) {
+				if(fumaRect.width > fishRect.width) {
 				fuma.setEatFish(true);
 				score += 20;
 				ocean.getLevel().setScore(score);
-				//fishes.get(i).setBeEaten(true);
 				fishes.remove(fishes.get(i));
 				ocean.setFish(fishes);
-				//Gdx.app.log("Collide x", "fuma collide");
+				} else {
+				fuma.setState(State.DIE);	
+				}
 			}
 		}
-		fumaRect.x = fuma.getPosition().x;
+		//fumaRect.x = fuma.getPosition().x;
 		//fumaRect.y = fuma.getPosition().y;
 
 		//fuma.getPosition().add(fuma.getVelocity());
-		fuma.getBounds().x = fuma.getPosition().x;
-		fuma.getBounds().y = fuma.getPosition().y;
-		fuma.getVelocity().mul(1/delta);
+		//fuma.getBounds().x = fuma.getPosition().x;
+		//fuma.getBounds().y = fuma.getPosition().y;
+		//fuma.getVelocity().mul(1/delta);
 	}
 
 	private void processInput() {
+		
 		if (keys.get(Keys.LEFT)) {
 			// left is pressed
 			fuma.setFacingRight(false);
@@ -174,6 +181,7 @@ public class OceanController {
 			// vertical speed is 0
 			fuma.getVelocity().y = 0;
 		}
+		
 	}
 
 	private void updateFuma() {
@@ -192,6 +200,7 @@ public class OceanController {
 				fuma.getVelocity().y = -Fuma.SPEED;
 			}
 		//}
+	
 	}
 
 	private void randomDir() {
@@ -202,55 +211,36 @@ public class OceanController {
 			} else {
 				fishes.get(i).setDir("RIGHT");
 			}
-/*			// up
-			if (rand.nextInt(4) + 1 == 1) {
+			/*if( i % 3 == 0) {
 				fishes.get(i).setDir("UP");
-
-			}
-			// down
-			if (rand.nextInt(4) + 1 == 2) {
+			}else if (i % 3 == 0 && i % 2 == 0) {
 				fishes.get(i).setDir("DOWN");
-
-			}
-			// right
-			if (rand.nextInt(4) + 1 == 3) {
-				fishes.get(i).setDir("RIGHT");
-
-			}
-			// left
-			if (rand.nextInt(4) + 1 == 4) {
-				fishes.get(i).setDir("LEFT");
-
-			}
-*/		}
+			}*/
+		}
 	}
 
 	private void updateFishRandom() {
-		//float delta = Gdx.graphics.getDeltaTime();
-		//check if the fish be eaten or not
-		/*ArrayList<OtherFish> liveFish = new ArrayList<OtherFish>();
-		for(int i = 0 ; i < fishes.size() ; i++) {
-			if(fishes.get(i).BeEaten() == false) {
-				liveFish.add(fishes.get(i));
-			}
-		}*/
-		
+		float delta = Gdx.graphics.getDeltaTime();
 		randomDir();
 		//Gdx.app.log("number of fish", String.valueOf(fishes.size()));
 		for (int i = 0; i < fishes.size(); i++) {
 			if (fishes.get(i).getDir().equalsIgnoreCase("UP")) {
 				fishes.get(i).getVel().y = fishes.get(i).getSpeed();
+				//fishes.get(i).setBounds(fishes.get(i).getPosition().x,fishes.get(i).getPosition().y);
 			}
 			if (fishes.get(i).getDir().equalsIgnoreCase("DOWN")) {
 				fishes.get(i).getVel().y = -fishes.get(i).getSpeed();
+				//fishes.get(i).setBounds(fishes.get(i).getPosition().x,fishes.get(i).getPosition().y);
 			}
 			if (fishes.get(i).getDir().equalsIgnoreCase("RIGHT")) {
 				fishes.get(i).getVel().x = fishes.get(i).getSpeed();
+				//fishes.get(i).setBounds(fishes.get(i).getPosition().x,fishes.get(i).getPosition().y);
 			}
 			if (fishes.get(i).getDir().equalsIgnoreCase("LEFT")) {
 				fishes.get(i).getVel().x = -fishes.get(i).getSpeed();
+				//fishes.get(i).setBounds(fishes.get(i).getPosition().x,fishes.get(i).getPosition().y);
 			}
-			//fishes.get(i).update(delta);
+			fishes.get(i).update(delta);
 		}
 	}
 }
