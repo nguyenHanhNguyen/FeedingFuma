@@ -27,7 +27,7 @@ public class Fuma {
 	String dir = new String();
 	boolean facingRight = true;
 	boolean eatFish = false;
-	float size = 1f;
+	float size = 0.5f;
 	
 	public Fuma(Vector2 position) {
 		this.position = position;

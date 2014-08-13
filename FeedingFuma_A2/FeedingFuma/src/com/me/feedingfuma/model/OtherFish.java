@@ -31,6 +31,7 @@ public class OtherFish {
 	boolean eatFuma = false;
 	float size;
 	float speed;
+	boolean facingRight = true;
 
 	public OtherFish(Vector2 position) {
 		this.position = position;
@@ -38,6 +39,7 @@ public class OtherFish {
 		//this.bounds.setY(position.y);
 	}
 
+	
 	public boolean BeEaten() {
 		return beEaten;
 	}
@@ -121,6 +123,13 @@ public class OtherFish {
 
 	}
 
+	public boolean getFacingRight() {
+		return facingRight;
+	}
+	
+	public void setFacingRight(boolean facingRight) {
+		this.facingRight = facingRight;
+	}
 	public void update(float delta) {
 		if (position.x * ppuX >= WIDTH && position.y * ppuY < HEIGHT) {
 			position.x = 0;

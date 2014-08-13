@@ -2,11 +2,15 @@ package com.me.feedingfuma.view;
 
 import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
@@ -24,21 +28,28 @@ public class OceanRenderer {
 	private Ocean ocean;
 	private OrthographicCamera cam;
 
-	private Texture fumaTexture;
-	private Texture leftFuma;
-	private Texture yellowFishTexture;
-	private Texture blueFishTexture;
-	private Texture normalFish;
-	private Texture lahanTexture;
-	private Texture bigFishTexture;
-	private Texture pirahnaTexture;
-	private Texture rightBlueFishTexture;
-
+	
 	private SpriteBatch spriteBatch;
+	private Sprite fumaSprite;
+	private Sprite leftFumaSprite;
+	private Sprite blueFishSprite;
+	private Sprite rightBlueFishSprite;
+	private Sprite yellowFishSprite;
+	private Sprite normalFishSprite;
+	private Sprite lahanSprite;
+	private Sprite bigFishSprite;
+	private Sprite pirahnaSprite;
+	private Sprite backgroundSprite;
+	
+	
+	
 	private int width;
 	private int height;
 	private float ppuX; // pixels per unit on the X axis
 	private float ppuY; // pixels per unit on the Y axis
+	private AssetManager assetManager;
+	private TextureAtlas atlas;
+	
 	BitmapFont score = new BitmapFont();
 	Level1 level = new Level1();
 	ShapeRenderer debugRenderer = new ShapeRenderer();
@@ -62,22 +73,28 @@ public class OceanRenderer {
 	}
 
 	private void loadTextures() {
-		leftFuma = new Texture(Gdx.files.internal("data/golden_fish_left.png"));
-		fumaTexture = new Texture(Gdx.files.internal("data/golden_fish.png"));
-		yellowFishTexture = new Texture(
-				Gdx.files.internal("data/yellowFish.png"));
-		blueFishTexture = new Texture(Gdx.files.internal("data/blueFish.png"));
-		rightBlueFishTexture = new Texture(
-				Gdx.files.internal("data/right_blueFish.png"));
-		lahanTexture = new Texture(Gdx.files.internal("data/lahan.png"));
-		normalFish = new Texture(Gdx.files.internal("data/fish2.png"));
-		bigFishTexture = new Texture(Gdx.files.internal("data/big_fish.png"));
-		pirahnaTexture = new Texture(Gdx.files.internal("data/pirahna.png"));
-
+		// use asset manager for better memory management
+		assetManager = new AssetManager();
+		assetManager.load("data/FeedingFuma.pack",TextureAtlas.class);
+		assetManager.finishLoading();
+		atlas = new TextureAtlas();
+		atlas = assetManager.get("data/FeedingFuma.pack",TextureAtlas.class);
+		
+		fumaSprite = new Sprite(atlas.findRegion("golden_fish"));
+		leftFumaSprite = new Sprite(atlas.findRegion("golden_fish_left"));
+		blueFishSprite = new Sprite(atlas.findRegion("blueFish"));
+		rightBlueFishSprite = new Sprite(atlas.findRegion("right_blueFish"));
+		yellowFishSprite = new Sprite(atlas.findRegion("yellowFish"));
+		normalFishSprite = new Sprite(atlas.findRegion("fish2"));
+		lahanSprite = new Sprite(atlas.findRegion("lahan"));
+		bigFishSprite = new Sprite(atlas.findRegion("big_fish"));
+		pirahnaSprite = new Sprite(atlas.findRegion("pirahna"));
+		
 	}
 
 	public void render() {
 		spriteBatch.begin();
+		drawBackground();
 		drawScore();
 		if(ocean.getFuma().state != State.DIE) {
 			drawFuma();
@@ -85,28 +102,37 @@ public class OceanRenderer {
 		drawOtherFish();
 		spriteBatch.end();
 		
-		drawDebug();
+		//drawDebug();
 	}
 
 	private void drawFuma() {
 		Fuma fuma = ocean.getFuma();
 		if (ocean.getLevel().getScore() < 100) {
+			fuma.setSize(0.5f);
+			fuma.setBounds(0.5f,0.5f);
+		} if(ocean.getLevel().getScore() > 100) {
+			fuma.setSize(0.8f);
+			fuma.setBounds(0.8f,0.8f);
+		} if(ocean.getLevel().getScore() > 200) {
 			fuma.setSize(1f);
 			fuma.setBounds(1f,1f);
-		} if(ocean.getLevel().getScore() > 100) {
+		} if(ocean.getLevel().getScore() > 250) {
 			fuma.setSize(1.2f);
-			fuma.setBounds(1.2f,1.2f);
-		}
+			fuma.setBounds(1.5f,1.5f);
+		} 
 
 		if (fuma.isFacingRight()) {
-			spriteBatch.draw(fumaTexture, fuma.getPosition().x * ppuX,
-					fuma.getPosition().y * ppuY, fuma.getSize() * ppuX, fuma.getSize()
-							* ppuY);
+			fumaSprite.setSize(fuma.getSize() * ppuX, fuma.getSize() * ppuY);
+			fumaSprite.setPosition(fuma.getPosition().x * ppuX,fuma.getPosition().y * ppuY);
+			fumaSprite.draw(spriteBatch);
+			
 		}
+		
 		if (!fuma.isFacingRight()) {
-			spriteBatch.draw(leftFuma, fuma.getPosition().x * ppuX,
-					fuma.getPosition().y * ppuY, fuma.getSize() * ppuX, fuma.getSize()
-							* ppuY);
+			leftFumaSprite.setSize(fuma.getSize() * ppuX, fuma.getSize() * ppuY);
+			leftFumaSprite.setPosition(fuma.getPosition().x * ppuX,fuma.getPosition().y * ppuY);
+			leftFumaSprite.draw(spriteBatch);
+			
 		}
 
 	}
@@ -115,43 +141,49 @@ public class OceanRenderer {
 		ArrayList<OtherFish> fish = ocean.getFish();
 		for (int i = 0; i < fish.size(); i++) {
 			if (fish.get(i).getGenre() == Genre.YellowFish) {
-				spriteBatch.draw(yellowFishTexture, fish.get(i).getPosition().x
-						* ppuX, fish.get(i).getPosition().y * ppuY, fish.get(i)
-						.getSize() * ppuX, fish.get(i).getSize() * ppuY);
+				yellowFishSprite.setPosition(fish.get(i).getPosition().x* ppuX, fish.get(i).getPosition().y * ppuY);
+				yellowFishSprite.setSize(fish.get(i).getSize() * ppuX, fish.get(i).getSize() * ppuY);
+				yellowFishSprite.draw(spriteBatch);
+					
 			}
 			if (fish.get(i).getGenre() == Genre.BlueFish
-					&& fish.get(i).getDir().equalsIgnoreCase("left")) {
-				spriteBatch.draw(blueFishTexture, fish.get(i).getPosition().x
-						* ppuX, fish.get(i).getPosition().y * ppuY, fish.get(i)
-						.getSize() * ppuX, fish.get(i).getSize() * ppuY);
+					&& fish.get(i).getFacingRight() == false) {
+				blueFishSprite.setSize(fish.get(i).getSize() * ppuX, fish.get(i).getSize() * ppuY);
+				blueFishSprite.setPosition(fish.get(i).getPosition().x* ppuX, fish.get(i).getPosition().y * ppuY);
+				blueFishSprite.draw(spriteBatch);
+				
 			}
 			if (fish.get(i).getGenre() == Genre.BlueFish
-					&& fish.get(i).getDir().equalsIgnoreCase("right")) {
-				spriteBatch.draw(rightBlueFishTexture, fish.get(i)
-						.getPosition().x * ppuX, fish.get(i).getPosition().y
-						* ppuY, fish.get(i).getSize() * ppuX, fish.get(i)
-						.getSize() * ppuY);
+					&& fish.get(i).getFacingRight() == true) {
+				rightBlueFishSprite.setSize(fish.get(i).getSize() * ppuX, fish.get(i).getSize() * ppuY);
+				rightBlueFishSprite.setPosition(fish.get(i).getPosition().x* ppuX, fish.get(i).getPosition().y * ppuY);
+				rightBlueFishSprite.draw(spriteBatch);
+				
 			}
+			
 			if (fish.get(i).getGenre() == Genre.LaHan) {
-				spriteBatch.draw(lahanTexture, fish.get(i).getPosition().x
-						* ppuX, fish.get(i).getPosition().y * ppuY, fish.get(i)
-						.getSize() * ppuX, fish.get(i).getSize() * ppuY);
+				lahanSprite.setPosition(fish.get(i).getPosition().x* ppuX, fish.get(i).getPosition().y * ppuY);
+				lahanSprite.setSize(fish.get(i).getSize() * ppuX, fish.get(i).getSize() * ppuY);
+				lahanSprite.draw(spriteBatch);				
+				
 			}
 			if (fish.get(i).getGenre() == Genre.NormalFish) {
-				spriteBatch.draw(normalFish,
-						fish.get(i).getPosition().x * ppuX, fish.get(i)
-								.getPosition().y * ppuY, fish.get(i).getSize()
-								* ppuX, fish.get(i).getSize() * ppuY);
+				normalFishSprite.setPosition(fish.get(i).getPosition().x * ppuX, fish.get(i).getPosition().y * ppuY);
+				normalFishSprite.setSize(fish.get(i).getSize()* ppuX, fish.get(i).getSize() * ppuY);
+				normalFishSprite.draw(spriteBatch);				
+				
 			}
 			if (fish.get(i).getGenre() == Genre.BigFish) {
-				spriteBatch.draw(bigFishTexture, fish.get(i).getPosition().x
-						* ppuX, fish.get(i).getPosition().y * ppuY, fish.get(i)
-						.getSize() * ppuX, fish.get(i).getSize() * ppuY);
+				bigFishSprite.setPosition(fish.get(i).getPosition().x* ppuX, fish.get(i).getPosition().y * ppuY);
+				bigFishSprite.setSize(fish.get(i).getSize() * ppuX, fish.get(i).getSize() * ppuY);
+				bigFishSprite.draw(spriteBatch);
+		
 			}
 			if (fish.get(i).getGenre() == Genre.Pirahna) {
-				spriteBatch.draw(pirahnaTexture, fish.get(i).getPosition().x
-						* ppuX, fish.get(i).getPosition().y * ppuY, fish.get(i)
-						.getSize() * ppuX, fish.get(i).getSize() * ppuY);
+				pirahnaSprite.setPosition(fish.get(i).getPosition().x* ppuX, fish.get(i).getPosition().y * ppuY);
+				pirahnaSprite.setSize(fish.get(i).getSize() * ppuX, fish.get(i).getSize() * ppuY);
+				pirahnaSprite.draw(spriteBatch);
+						
 			}
 
 		}
@@ -159,8 +191,18 @@ public class OceanRenderer {
 	}
 
 	private void drawScore() {
-		score.setColor(0.0f, 0.0f, 1.0f, 1.0f);
 		score.draw(spriteBatch, "Score " + ocean.getLevel().getScore(), 50, 700);
+	}
+	
+	
+	private void drawBackground() {
+		if(ocean.getLevel().getLevelName().equalsIgnoreCase("level1")) {
+			backgroundSprite = new Sprite (atlas.findRegion("level1"));
+			backgroundSprite.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+			backgroundSprite.setPosition(0, 0);
+			backgroundSprite.draw(spriteBatch);
+		}
+	
 	}
 	
 	private void drawDebug() {
@@ -176,7 +218,7 @@ public class OceanRenderer {
 			debugRenderer.rect(x1, y1, rect.width, rect.height);
 		}
 		
-		// render Bob
+		// render Fuma
 		Fuma fuma = ocean.getFuma();
 		Rectangle rect = fuma.getBounds();
 		debugRenderer.setColor(new Color(0, 1, 0, 1));
@@ -185,9 +227,15 @@ public class OceanRenderer {
 		debugRenderer.rect(x1, y1, rect.width, rect.height);
 		debugRenderer.end();
 	}
+	
 
 	public void dispose() {
-		fumaTexture.dispose();
+		fumaSprite.getTexture().dispose();
+		leftFumaSprite.getTexture().dispose();
+		blueFishSprite.getTexture().dispose();
+		rightBlueFishSprite.getTexture().dispose();
+		
+		/*fumaTexture.dispose();
 		leftFuma.dispose();
 		yellowFishTexture.dispose();
 		blueFishTexture.dispose();
@@ -195,6 +243,7 @@ public class OceanRenderer {
 		lahanTexture.dispose();
 		bigFishTexture.dispose();
 		pirahnaTexture.dispose();
-
+		background.getTexture().dispose();*/
+		
 	}
 }

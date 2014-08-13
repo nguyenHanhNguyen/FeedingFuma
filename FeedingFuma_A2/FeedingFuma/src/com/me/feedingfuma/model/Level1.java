@@ -3,6 +3,9 @@ package com.me.feedingfuma.model;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.me.feedingfuma.model.OtherFish.Genre;
 
@@ -12,6 +15,10 @@ public class Level1 {
 	Random ran;
 	int score;
 	int live;
+	Sprite background;
+	AssetManager assetManager;
+	TextureAtlas atlas;
+	String levelName = "Level1";
 	
 	public int getScore() {
 		return score;
@@ -33,12 +40,16 @@ public class Level1 {
 		loadLevel1();
 	}
 	
+	public String getLevelName() {
+		return levelName;
+	}
+	
 	private void loadLevel1() {
 		ran = new Random();
 		fishes = new ArrayList<OtherFish>();
 
 		//small fishes up and down
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 30; i++) {
 			fishes.add(new OtherFish(new Vector2((ran.nextInt(10 - 5)), (ran
 					.nextInt(10 - 2)))));
 			fishes.get(i).setGenre(Genre.BlueFish);
@@ -51,19 +62,18 @@ public class Level1 {
 		}
 
 		for(int i = 0 ; i < 3 ; i++) {
+			fishes.add(new OtherFish(new Vector2((ran.nextInt(8)), (ran
+					.nextInt(7)))));
+			fishes.get(i).setGenre(Genre.LaHan);
+		}
+		
+		for(int i = 0 ; i < 1 ; i++) {
 			fishes.add(new OtherFish(new Vector2((ran.nextInt(10 - 5)), (ran
 					.nextInt(10 - 2)))));
-
 			fishes.get(i).setGenre(Genre.BigFish);
 		}
 		
 		for (int i = 0; i < fishes.size(); i++) {
-			/*if (fishes.get(i).getGenre() == Genre.YellowFish) {
-				fishes.get(i).setSize(0.5f);
-				fishes.get(i).setSpeed(2f);
-				fishes.get(i).getBounds().width = fishes.get(i).getSize();
-				fishes.get(i).getBounds().height = fishes.get(i).getSize();
-			}*/
 			if (fishes.get(i).getGenre() == Genre.LaHan) {
 				fishes.get(i).setSize(0.6f);
 				fishes.get(i).setSpeed(3f);
@@ -88,12 +98,7 @@ public class Level1 {
 				fishes.get(i).getBounds().width = fishes.get(i).getSize();
 				fishes.get(i).getBounds().height = fishes.get(i).getSize();
 			}
-			if (fishes.get(i).getGenre() == Genre.Pirahna) {
-				fishes.get(i).setSize(1f);
-				fishes.get(i).setSpeed(4f);
-				fishes.get(i).getBounds().width = fishes.get(i).getSize();
-				fishes.get(i).getBounds().height = fishes.get(i).getSize();
-			}
+			
 		}
 	}
 }

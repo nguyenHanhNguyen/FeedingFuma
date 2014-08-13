@@ -1,0 +1,82 @@
+
+FeedingFuma.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+level1
+  rotate: false
+  xy: 1, 572
+  size: 725, 433
+  orig: 725, 433
+  offset: 0, 0
+  index: -1
+big_fish
+  rotate: false
+  xy: 1, 293
+  size: 600, 277
+  orig: 600, 277
+  offset: 0, 0
+  index: -1
+golden_fish
+  rotate: false
+  xy: 1, 61
+  size: 300, 230
+  orig: 300, 230
+  offset: 0, 0
+  index: -1
+golden_fish_left
+  rotate: false
+  xy: 303, 61
+  size: 300, 230
+  orig: 300, 230
+  offset: 0, 0
+  index: -1
+pirahna
+  rotate: false
+  xy: 603, 421
+  size: 300, 149
+  orig: 300, 149
+  offset: 0, 0
+  index: -1
+lahan
+  rotate: false
+  xy: 1, 1
+  size: 100, 58
+  orig: 100, 58
+  offset: 0, 0
+  index: -1
+fish2
+  rotate: false
+  xy: 728, 949
+  size: 100, 56
+  orig: 100, 56
+  offset: 0, 0
+  index: -1
+yellowFish
+  rotate: false
+  xy: 603, 363
+  size: 100, 56
+  orig: 100, 56
+  offset: 0, 0
+  index: -1
+blowFish
+  rotate: false
+  xy: 103, 10
+  size: 100, 49
+  orig: 100, 49
+  offset: 0, 0
+  index: -1
+blueFish
+  rotate: false
+  xy: 728, 919
+  size: 100, 28
+  orig: 100, 28
+  offset: 0, 0
+  index: -1
+right_blueFish
+  rotate: false
+  xy: 830, 977
+  size: 100, 28
+  orig: 100, 28
+  offset: 0, 0
+  index: -1

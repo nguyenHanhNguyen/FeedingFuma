@@ -18,10 +18,12 @@ public class OceanController {
 	Random rand = new Random();
 	int score = 0;
 	Level1 level;
+
 	enum Keys {
 		LEFT, RIGHT, UP, DOWN;
 	}
 
+	boolean pause;
 	private Ocean ocean;
 	private Fuma fuma;
 	private ArrayList<OtherFish> fishes;
@@ -45,7 +47,7 @@ public class OceanController {
 	}
 
 	ArrayList<Rectangle> otherFishRect = new ArrayList<Rectangle>();
-	
+
 	public OceanController(Ocean ocean) {
 		fishes = new ArrayList<OtherFish>();
 		level = new Level1();
@@ -88,50 +90,42 @@ public class OceanController {
 
 	public void update(float delta) {
 		updateFishRandom();
-		if(fuma.state != State.SWIMMING) {
+		if (fuma.state != State.DIE) {
 			updateFuma();
 			fuma.update(delta);
-			detectCollision(delta);
 		}
-		
+		detectCollision(delta);
+
 	}
 
 	private void detectCollision(float delta) {
 
 		fuma.getVelocity().mul(delta);
-		
 		Rectangle fumaRect = rectPool.obtain();
 		fumaRect.set(fuma.getPosition().x, fuma.getPosition().y,
 				fuma.getBounds().width, fuma.getBounds().height);
 
-		//fumaRect.x += fuma.getVelocity().x;
-		//fumaRect.y += fuma.getVelocity().y;
-		for (int i = 0 ; i < fishes.size() ; i ++) {
-			Rectangle fishRect = new Rectangle();
-			fishRect.set(fishes.get(i).getPosition().x, fishes.get(i).getPosition().y,fishes.get(i).getBounds().width, fishes.get(i).getBounds().height);
+		for (int i = 0; i < fishes.size(); i++) {
+			Rectangle fishRect = rectPool.obtain();
+			fishRect.set(fishes.get(i).getPosition().x, fishes.get(i)
+					.getPosition().y, fishes.get(i).getBounds().width, fishes
+					.get(i).getBounds().height);
 			if (fumaRect.overlaps(fishRect)) {
-				if(fumaRect.width > fishRect.width) {
-				fuma.setEatFish(true);
-				score += 20;
-				ocean.getLevel().setScore(score);
-				fishes.remove(fishes.get(i));
-				ocean.setFish(fishes);
+				if (fumaRect.width > fishRect.width) {
+					fuma.setEatFish(true);
+					score += 20;
+					ocean.getLevel().setScore(score);
+					fishes.remove(fishes.get(i));
+					ocean.setFish(fishes);
 				} else {
-				fuma.setState(State.DIE);	
+					fuma.setState(State.DIE);
 				}
 			}
 		}
-		//fumaRect.x = fuma.getPosition().x;
-		//fumaRect.y = fuma.getPosition().y;
-
-		//fuma.getPosition().add(fuma.getVelocity());
-		//fuma.getBounds().x = fuma.getPosition().x;
-		//fuma.getBounds().y = fuma.getPosition().y;
-		//fuma.getVelocity().mul(1/delta);
 	}
 
 	private void processInput() {
-		
+
 		if (keys.get(Keys.LEFT)) {
 			// left is pressed
 			fuma.setFacingRight(false);
@@ -181,66 +175,90 @@ public class OceanController {
 			// vertical speed is 0
 			fuma.getVelocity().y = 0;
 		}
-		
+
 	}
 
 	private void updateFuma() {
 		processInput();
-		//if (fuma.getEatFish() == false) {
-			if (fuma.getDir().equalsIgnoreCase("LEFT")) {
-				fuma.getVelocity().x = -Fuma.SPEED;
-			}
-			if (fuma.getDir().equalsIgnoreCase("RIGHT")) {
-				fuma.getVelocity().x = Fuma.SPEED;
-			}
-			if (fuma.getDir().equalsIgnoreCase("UP")) {
-				fuma.getVelocity().y = Fuma.SPEED;
-			}
-			if (fuma.getDir().equalsIgnoreCase("DOWN")) {
-				fuma.getVelocity().y = -Fuma.SPEED;
-			}
-		//}
-	
+		
+		if (fuma.getDir().equalsIgnoreCase("LEFT")) {
+			fuma.getVelocity().x = -Fuma.SPEED;
+		}
+		if (fuma.getDir().equalsIgnoreCase("RIGHT")) {
+			fuma.getVelocity().x = Fuma.SPEED;
+		}
+		if (fuma.getDir().equalsIgnoreCase("UP")) {
+			fuma.getVelocity().y = Fuma.SPEED;
+		}
+		if (fuma.getDir().equalsIgnoreCase("DOWN")) {
+			fuma.getVelocity().y = -Fuma.SPEED;
+		}
+		
 	}
 
 	private void randomDir() {
-		
-		for (int i = 0; i < fishes.size(); i++) {
-			if(i % 2 == 0) {
+		for (int i = 0; i < fishes.size() / 2; i++) {
+			if (i % 2 == 0) {
 				fishes.get(i).setDir("LEFT");
-			} else {
-				fishes.get(i).setDir("RIGHT");
+				fishes.get(i).setFacingRight(false);
 			}
-			/*if( i % 3 == 0) {
+			if (i % 2 != 0) {
+				fishes.get(i).setDir("RIGHT");
+				fishes.get(i).setFacingRight(true);
+			}
+		}
+		
+		for(int i = fishes.size() / 2 ; i < fishes.size() ; i++) {
+			if (i % 2 == 0) {
 				fishes.get(i).setDir("UP");
-			}else if (i % 3 == 0 && i % 2 == 0) {
+				if(fishes.get(i).getFacingRight() == true) {
+					fishes.get(i).setFacingRight(true);
+				} else {
+				fishes.get(i).setFacingRight(false);
+				}
+			}
+			if (i % 2 != 0) {
 				fishes.get(i).setDir("DOWN");
-			}*/
+				fishes.get(i).setFacingRight(true);
+				if(fishes.get(i).getFacingRight() == true) {
+					fishes.get(i).setFacingRight(true);
+				} else {
+				fishes.get(i).setFacingRight(false);
+				}
+			}
 		}
 	}
 
 	private void updateFishRandom() {
 		float delta = Gdx.graphics.getDeltaTime();
 		randomDir();
-		//Gdx.app.log("number of fish", String.valueOf(fishes.size()));
+		// Gdx.app.log("number of fish", String.valueOf(fishes.size()));
 		for (int i = 0; i < fishes.size(); i++) {
 			if (fishes.get(i).getDir().equalsIgnoreCase("UP")) {
 				fishes.get(i).getVel().y = fishes.get(i).getSpeed();
-				//fishes.get(i).setBounds(fishes.get(i).getPosition().x,fishes.get(i).getPosition().y);
+				// fishes.get(i).setBounds(fishes.get(i).getPosition().x,fishes.get(i).getPosition().y);
 			}
 			if (fishes.get(i).getDir().equalsIgnoreCase("DOWN")) {
 				fishes.get(i).getVel().y = -fishes.get(i).getSpeed();
-				//fishes.get(i).setBounds(fishes.get(i).getPosition().x,fishes.get(i).getPosition().y);
+				// fishes.get(i).setBounds(fishes.get(i).getPosition().x,fishes.get(i).getPosition().y);
 			}
 			if (fishes.get(i).getDir().equalsIgnoreCase("RIGHT")) {
 				fishes.get(i).getVel().x = fishes.get(i).getSpeed();
-				//fishes.get(i).setBounds(fishes.get(i).getPosition().x,fishes.get(i).getPosition().y);
+				// fishes.get(i).setBounds(fishes.get(i).getPosition().x,fishes.get(i).getPosition().y);
 			}
 			if (fishes.get(i).getDir().equalsIgnoreCase("LEFT")) {
 				fishes.get(i).getVel().x = -fishes.get(i).getSpeed();
-				//fishes.get(i).setBounds(fishes.get(i).getPosition().x,fishes.get(i).getPosition().y);
+				// fishes.get(i).setBounds(fishes.get(i).getPosition().x,fishes.get(i).getPosition().y);
 			}
 			fishes.get(i).update(delta);
 		}
+	}
+
+	public void pause() {
+		pause = true;
+	}
+
+	public void resume() {
+		pause = false;
 	}
 }
