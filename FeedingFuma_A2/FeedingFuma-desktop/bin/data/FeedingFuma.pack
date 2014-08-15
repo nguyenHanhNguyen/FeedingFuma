@@ -5,78 +5,181 @@ filter: Nearest,Nearest
 repeat: none
 level1
   rotate: false
-  xy: 1, 572
+  xy: 1, 583
   size: 725, 433
   orig: 725, 433
   offset: 0, 0
   index: -1
+down_arrow
+  rotate: false
+  xy: 728, 716
+  size: 227, 300
+  orig: 227, 300
+  offset: 0, 0
+  index: -1
+up_arrow
+  rotate: false
+  xy: 728, 414
+  size: 227, 300
+  orig: 227, 300
+  offset: 0, 0
+  index: -1
 big_fish
   rotate: false
-  xy: 1, 293
+  xy: 1, 304
   size: 600, 277
   orig: 600, 277
   offset: 0, 0
   index: -1
-golden_fish
-  rotate: false
-  xy: 1, 61
-  size: 300, 230
-  orig: 300, 230
-  offset: 0, 0
-  index: -1
-golden_fish_left
-  rotate: false
-  xy: 303, 61
-  size: 300, 230
-  orig: 300, 230
-  offset: 0, 0
-  index: -1
-pirahna
-  rotate: false
-  xy: 603, 421
-  size: 300, 149
-  orig: 300, 149
-  offset: 0, 0
-  index: -1
 lahan
   rotate: false
-  xy: 1, 1
+  xy: 603, 523
+  size: 100, 58
+  orig: 100, 58
+  offset: 0, 0
+  index: -1
+left_lahan
+  rotate: false
+  xy: 603, 463
   size: 100, 58
   orig: 100, 58
   offset: 0, 0
   index: -1
 fish2
   rotate: false
-  xy: 728, 949
+  xy: 603, 405
   size: 100, 56
   orig: 100, 56
   offset: 0, 0
   index: -1
+tropical_fish
+  rotate: false
+  xy: 705, 123
+  size: 300, 289
+  orig: 300, 289
+  offset: 0, 0
+  index: -1
+left_fish2
+  rotate: false
+  xy: 603, 347
+  size: 100, 56
+  orig: 100, 56
+  offset: 0, 0
+  index: -1
+left_yellowFish
+  rotate: false
+  xy: 603, 289
+  size: 100, 56
+  orig: 100, 56
+  offset: 0, 0
+  index: -1
+right_big_fish
+  rotate: false
+  xy: 1, 25
+  size: 600, 277
+  orig: 600, 277
+  offset: 0, 0
+  index: -1
+long_fish
+  rotate: false
+  xy: 603, 1
+  size: 300, 120
+  orig: 300, 120
+  offset: 0, 0
+  index: -1
 yellowFish
   rotate: false
-  xy: 603, 363
+  xy: 905, 65
   size: 100, 56
   orig: 100, 56
   offset: 0, 0
   index: -1
 blowFish
   rotate: false
-  xy: 103, 10
+  xy: 905, 14
+  size: 100, 49
+  orig: 100, 49
+  offset: 0, 0
+  index: -1
+left_blowFish
+  rotate: false
+  xy: 603, 238
   size: 100, 49
   orig: 100, 49
   offset: 0, 0
   index: -1
 blueFish
   rotate: false
-  xy: 728, 919
+  xy: 603, 208
   size: 100, 28
   orig: 100, 28
   offset: 0, 0
   index: -1
 right_blueFish
   rotate: false
-  xy: 830, 977
+  xy: 603, 178
   size: 100, 28
   orig: 100, 28
+  offset: 0, 0
+  index: -1
+
+FeedingFuma2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+golden_fish
+  rotate: false
+  xy: 1, 676
+  size: 300, 230
+  orig: 300, 230
+  offset: 0, 0
+  index: -1
+golden_fish_left
+  rotate: false
+  xy: 1, 444
+  size: 300, 230
+  orig: 300, 230
+  offset: 0, 0
+  index: -1
+yellow_black_fish
+  rotate: false
+  xy: 303, 678
+  size: 300, 228
+  orig: 300, 228
+  offset: 0, 0
+  index: -1
+left_arrow
+  rotate: false
+  xy: 1, 215
+  size: 300, 227
+  orig: 300, 227
+  offset: 0, 0
+  index: -1
+right_arrow
+  rotate: false
+  xy: 303, 449
+  size: 300, 227
+  orig: 300, 227
+  offset: 0, 0
+  index: -1
+jelly_fish
+  rotate: false
+  xy: 605, 606
+  size: 215, 300
+  orig: 215, 300
+  offset: 0, 0
+  index: -1
+butterfly_fish
+  rotate: false
+  xy: 1, 1
+  size: 300, 212
+  orig: 300, 212
+  offset: 0, 0
+  index: -1
+ill_fish
+  rotate: false
+  xy: 303, 305
+  size: 300, 142
+  orig: 300, 142
   offset: 0, 0
   index: -1

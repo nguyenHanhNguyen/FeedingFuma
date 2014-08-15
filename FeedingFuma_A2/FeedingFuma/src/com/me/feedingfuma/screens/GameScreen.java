@@ -9,21 +9,21 @@ import com.me.feedingfuma.controller.OceanController;
 import com.me.feedingfuma.model.Ocean;
 import com.me.feedingfuma.view.OceanRenderer;
 
-public class GameScreen implements Screen,InputProcessor{
+public class GameScreen implements Screen, InputProcessor {
 
 	private Ocean ocean;
 	private OceanController oceanController;
 	private OceanRenderer oceanRenderer;
-	
+
 	private int width, height;
-	
+
 	public void show() {
 		ocean = new Ocean();
 		oceanRenderer = new OceanRenderer(ocean);
 		oceanController = new OceanController(ocean);
 		Gdx.input.setInputProcessor(this);
 	}
-	
+
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
@@ -31,16 +31,15 @@ public class GameScreen implements Screen,InputProcessor{
 		oceanController.update(delta);
 		oceanRenderer.render();
 	}
-	
+
 	@Override
 	public void resize(int width, int height) {
-		oceanRenderer.setSize(width,height);
+		oceanRenderer.setSize(width, height);
 		this.width = width;
 		this.height = height;
-		
+
 	}
 
-	
 	@Override
 	public boolean keyDown(int keycode) {
 		// TODO Auto-generated method stub
@@ -63,22 +62,43 @@ public class GameScreen implements Screen,InputProcessor{
 	public boolean touchDown(int x, int y, int pointer, int button) {
 		if (!Gdx.app.getType().equals(ApplicationType.Android))
 			return false;
+
 		// left
 		if (x < width / 2 && y > height / 2) {
 			oceanController.leftPressed();
 		}
-		//right
+		// right
 		if (x > width / 2 && y > height / 2) {
 			oceanController.rightPressed();
 		}
-		//up
-		if(x < width / 2 && y < height / 2) {
+		// up
+		if (x < width / 2 && y < height / 2) {
 			oceanController.upPressed();
 		}
-		//down
-		if(x > width / 2 && y < height / 2) {
+		// down
+		if (x > width / 2 && y < height / 2) {
 			oceanController.downPressed();
 		}
+
+		/*// left
+		if (x == 0 && y == Gdx.graphics.getHeight() / 2) {
+			oceanController.leftPressed();
+		}
+		// right
+		if (x == Gdx.graphics.getWidth() - 50
+				&& y == Gdx.graphics.getHeight() / 2) {
+			oceanController.rightPressed();
+		}
+		// up
+		if (x == Gdx.graphics.getWidth() / 2
+				&& y == Gdx.graphics.getHeight() - 50) {
+			oceanController.upPressed();
+		}
+		// down
+		if (x == Gdx.graphics.getWidth() / 2 && y == 0) {
+			oceanController.downPressed();
+		}*/
+		
 		return true;
 	}
 
@@ -91,11 +111,11 @@ public class GameScreen implements Screen,InputProcessor{
 		if (x > width / 2 && y > height / 2) {
 			oceanController.rightReleased();
 		}
-		if(x < width / 2 && y < height / 2) {
+		if (x < width / 2 && y < height / 2) {
 			oceanController.upReleased();
 		}
-		//down
-		if(x > width / 2 && y < height / 2) {
+		// down
+		if (x > width / 2 && y < height / 2) {
 			oceanController.downReleased();
 		}
 		return true;
@@ -119,7 +139,6 @@ public class GameScreen implements Screen,InputProcessor{
 		return false;
 	}
 
-	
 	@Override
 	public void hide() {
 		Gdx.input.setInputProcessor(null);
@@ -128,13 +147,13 @@ public class GameScreen implements Screen,InputProcessor{
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

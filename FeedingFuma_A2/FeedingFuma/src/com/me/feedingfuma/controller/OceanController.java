@@ -17,6 +17,7 @@ import com.me.feedingfuma.model.OtherFish;
 public class OceanController {
 	Random rand = new Random();
 	int score = 0;
+	int live = 5;
 	Level1 level;
 
 	enum Keys {
@@ -90,10 +91,10 @@ public class OceanController {
 
 	public void update(float delta) {
 		updateFishRandom();
-		if (fuma.state != State.DIE) {
+		//if (fuma.state != State.DIE) {
 			updateFuma();
 			fuma.update(delta);
-		}
+		//}
 		detectCollision(delta);
 
 	}
@@ -118,6 +119,8 @@ public class OceanController {
 					fishes.remove(fishes.get(i));
 					ocean.setFish(fishes);
 				} else {
+					live --;
+					ocean.getLevel().setLive(live);
 					fuma.setState(State.DIE);
 				}
 			}

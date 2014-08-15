@@ -14,7 +14,7 @@ public class Level1 {
 	ArrayList<OtherFish> fishes;
 	Random ran;
 	int score;
-	int live;
+	int live = 5;
 	Sprite background;
 	AssetManager assetManager;
 	TextureAtlas atlas;
@@ -28,6 +28,13 @@ public class Level1 {
 		this.score = score;
 	}
 	
+	public int getLive() {
+		return live;
+	}
+	
+	public void setLive(int live) {
+		this.live = live;
+	}
 	public ArrayList<OtherFish> getFish() {
 		return fishes;
 	}
@@ -47,7 +54,7 @@ public class Level1 {
 	private void loadLevel1() {
 		ran = new Random();
 		fishes = new ArrayList<OtherFish>();
-
+		
 		//small fishes up and down
 		for (int i = 0; i < 30; i++) {
 			fishes.add(new OtherFish(new Vector2((ran.nextInt(10 - 5)), (ran
