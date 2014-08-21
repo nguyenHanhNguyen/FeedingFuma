@@ -13,26 +13,34 @@ public class Fuma {
 	private float ppuY = 720 / CAMERA_HEIGHT; // pixels per unit on the Y axis
 
 	public enum State {
-		IDLE, SWIMMING, DIE;
+		SWIMMING, DIE;
 	}
 
-	//public static float SIZE = 1f;
-	public static float SPEED = 2.5f;
+	//public static float SPEED = 2.5f;
 
 	Vector2 position = new Vector2();
 	Vector2 acceleration = new Vector2();
 	Vector2 velocity = new Vector2();
 	Rectangle bounds = new Rectangle();
-	public State state = State.IDLE;
+	public State state = State.SWIMMING;
 	String dir = new String();
 	boolean facingRight = true;
 	boolean eatFish = false;
 	float size = 0.5f;
+	float speed = 2.5f;
 	
 	public Fuma(Vector2 position) {
 		this.position = position;
 		this.bounds.height = size;
 		this.bounds.width = size;
+	}
+	
+	public void setSpeed(float speed) {
+		this.speed = speed;
+	}
+	
+	public float getSpeed() {
+		return speed;
 	}
 
     public void setSize(float size) {

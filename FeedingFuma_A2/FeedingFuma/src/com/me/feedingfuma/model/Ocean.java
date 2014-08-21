@@ -1,21 +1,28 @@
 package com.me.feedingfuma.model;
 
 import java.util.ArrayList;
-import com.badlogic.gdx.math.Vector2;
 
 public class Ocean {
-	Fuma fuma;
+	ArrayList<Fuma> fuma;
 	ArrayList<OtherFish> fishes;
 	Level1 level;
 
-	public Fuma getFuma() {
-		return fuma;
+	public Fuma getFuma(int order) {
+		return level.getFuma(order);
+	}
+	
+	public void setFuma(ArrayList<Fuma> fuma) {
+		this.fuma = fuma;
 	}
 	
 	public Level1 getLevel() {
 		return level;
 	}
 
+	public void setLevel(Level1 level) {
+		this.level = level;
+	}
+	
 	public ArrayList<OtherFish> getFish() {
 		return level.getFish();
 	}
@@ -29,8 +36,6 @@ public class Ocean {
 	}
 
 	private void createEnvironment() {
-		fuma = new Fuma(new Vector2(7, 2));
 		level = new Level1();
-
 	}
 }

@@ -5,14 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Pool;
+import com.me.feedingfuma.assetManager.SoundsManager;
 import com.me.feedingfuma.model.Fuma;
 import com.me.feedingfuma.model.Fuma.State;
 import com.me.feedingfuma.model.Level1;
 import com.me.feedingfuma.model.Ocean;
 import com.me.feedingfuma.model.OtherFish;
+import com.me.feedingfuma.model.OtherFish.Genre;
 
 public class OceanController {
 	Random rand = new Random();
@@ -24,16 +25,17 @@ public class OceanController {
 		LEFT, RIGHT, UP, DOWN;
 	}
 
-	boolean pause;
+	boolean pause = false;
 	private Ocean ocean;
 	private Fuma fuma;
+	private ArrayList<Fuma> array_fuma;
 	private ArrayList<OtherFish> fishes;
+	private SoundsManager soundsManager;
 	// use to detect collision
 	private Pool<Rectangle> rectPool = new Pool<Rectangle>() {
 
 		@Override
 		protected Rectangle newObject() {
-			// TODO Auto-generated method stub
 			return new Rectangle();
 		}
 
@@ -53,8 +55,14 @@ public class OceanController {
 		fishes = new ArrayList<OtherFish>();
 		level = new Level1();
 		this.ocean = ocean;
-		this.fuma = ocean.getFuma();
-		this.fishes = ocean.getFish();
+		// get the last fish in the array list
+		if (ocean.getLevel().getLive() > 0) {
+			this.fuma = ocean.getLevel()
+					.getFuma(ocean.getLevel().getLive() - 1);
+		}
+		this.array_fuma = ocean.getLevel().getAllFuma();
+		this.fishes = ocean.getLevel().getFish();
+		soundsManager = new SoundsManager();
 	}
 
 	public void leftPressed() {
@@ -90,15 +98,18 @@ public class OceanController {
 	}
 
 	public void update(float delta) {
-		updateFishRandom();
-		//if (fuma.state != State.DIE) {
-			updateFuma();
-			fuma.update(delta);
-		//}
-		detectCollision(delta);
 
+		if (ocean.getLevel().getPause() == false) {
+			ocean.getLevel().updateFishRandom();
+			if (ocean.getLevel().getLive() > 0) {
+				updateFuma();
+			}
+			fuma.update(delta);
+			detectCollision(delta);
+		}
 	}
 
+	// detect collision
 	private void detectCollision(float delta) {
 
 		fuma.getVelocity().mul(delta);
@@ -111,20 +122,50 @@ public class OceanController {
 			fishRect.set(fishes.get(i).getPosition().x, fishes.get(i)
 					.getPosition().y, fishes.get(i).getBounds().width, fishes
 					.get(i).getBounds().height);
+			// detect collision with small fish
+			//Gdx.app.log("live", String.valueOf(live));
 			if (fumaRect.overlaps(fishRect)) {
 				if (fumaRect.width > fishRect.width) {
-					fuma.setEatFish(true);
-					score += 20;
+					// if (fumaRect.width > fishRect.width) {
+					if (fishes.get(i).getGenre().equals(Genre.BlueFish)) {
+						score += 10;
+					}
+					if (fishes.get(i).getGenre().equals(Genre.NormalFish)) {
+						score += 20;
+					}
+					if (fishes.get(i).getGenre().equals(Genre.LaHan)) {
+						score += 30;
+					}
+					if (fishes.get(i).getGenre().equals(Genre.BigFish)) {
+						score += 50;
+					}
 					ocean.getLevel().setScore(score);
+					fuma.setEatFish(true);
 					fishes.remove(fishes.get(i));
 					ocean.setFish(fishes);
+					soundsManager.play("bite");
+
 				} else {
-					live --;
-					ocean.getLevel().setLive(live);
 					fuma.setState(State.DIE);
+					pause = true;
+					if (live > 0) {
+						live--;
+						ocean.getLevel().setLive(live);
+						array_fuma.remove(fuma);
+						ocean.setFuma(array_fuma);
+						if(live > 1) {
+							fuma = ocean.getFuma(live - 1);
+						} 
+						fuma.setState(State.SWIMMING);
+						pause = false;
+					}
+
 				}
+			} else {
+				fuma.setEatFish(false);
 			}
 		}
+
 	}
 
 	private void processInput() {
@@ -163,7 +204,7 @@ public class OceanController {
 
 		if ((keys.get(Keys.LEFT) && keys.get(Keys.RIGHT))
 				|| (!keys.get(Keys.LEFT) && !(keys.get(Keys.RIGHT)))) {
-			fuma.setState(State.IDLE);
+			// fuma.setState(State.IDLE);
 			// acceleration is 0 on the x
 			fuma.getAcceleration().x = 0;
 			// horizontal speed is 0
@@ -172,7 +213,7 @@ public class OceanController {
 
 		if ((keys.get(Keys.UP) && keys.get(Keys.DOWN))
 				|| (!keys.get(Keys.UP) && !(keys.get(Keys.DOWN)))) {
-			fuma.setState(State.IDLE);
+			// fuma.setState(State.IDLE);
 			// acceleration is 0 on the y
 			fuma.getAcceleration().y = 0;
 			// vertical speed is 0
@@ -183,78 +224,25 @@ public class OceanController {
 
 	private void updateFuma() {
 		processInput();
-		
+
 		if (fuma.getDir().equalsIgnoreCase("LEFT")) {
-			fuma.getVelocity().x = -Fuma.SPEED;
+			fuma.getVelocity().x = -fuma.getSpeed();
 		}
 		if (fuma.getDir().equalsIgnoreCase("RIGHT")) {
-			fuma.getVelocity().x = Fuma.SPEED;
+			fuma.getVelocity().x = fuma.getSpeed();
 		}
 		if (fuma.getDir().equalsIgnoreCase("UP")) {
-			fuma.getVelocity().y = Fuma.SPEED;
+			fuma.getVelocity().y = fuma.getSpeed();
 		}
 		if (fuma.getDir().equalsIgnoreCase("DOWN")) {
-			fuma.getVelocity().y = -Fuma.SPEED;
+			fuma.getVelocity().y = -fuma.getSpeed();
 		}
-		
-	}
 
-	private void randomDir() {
-		for (int i = 0; i < fishes.size() / 2; i++) {
-			if (i % 2 == 0) {
-				fishes.get(i).setDir("LEFT");
-				fishes.get(i).setFacingRight(false);
-			}
-			if (i % 2 != 0) {
-				fishes.get(i).setDir("RIGHT");
-				fishes.get(i).setFacingRight(true);
-			}
+		if (fuma.getDir().equalsIgnoreCase("DIE")) {
+			fuma.getVelocity().x = 0;
+			fuma.getVelocity().y = 0;
 		}
-		
-		for(int i = fishes.size() / 2 ; i < fishes.size() ; i++) {
-			if (i % 2 == 0) {
-				fishes.get(i).setDir("UP");
-				if(fishes.get(i).getFacingRight() == true) {
-					fishes.get(i).setFacingRight(true);
-				} else {
-				fishes.get(i).setFacingRight(false);
-				}
-			}
-			if (i % 2 != 0) {
-				fishes.get(i).setDir("DOWN");
-				fishes.get(i).setFacingRight(true);
-				if(fishes.get(i).getFacingRight() == true) {
-					fishes.get(i).setFacingRight(true);
-				} else {
-				fishes.get(i).setFacingRight(false);
-				}
-			}
-		}
-	}
 
-	private void updateFishRandom() {
-		float delta = Gdx.graphics.getDeltaTime();
-		randomDir();
-		// Gdx.app.log("number of fish", String.valueOf(fishes.size()));
-		for (int i = 0; i < fishes.size(); i++) {
-			if (fishes.get(i).getDir().equalsIgnoreCase("UP")) {
-				fishes.get(i).getVel().y = fishes.get(i).getSpeed();
-				// fishes.get(i).setBounds(fishes.get(i).getPosition().x,fishes.get(i).getPosition().y);
-			}
-			if (fishes.get(i).getDir().equalsIgnoreCase("DOWN")) {
-				fishes.get(i).getVel().y = -fishes.get(i).getSpeed();
-				// fishes.get(i).setBounds(fishes.get(i).getPosition().x,fishes.get(i).getPosition().y);
-			}
-			if (fishes.get(i).getDir().equalsIgnoreCase("RIGHT")) {
-				fishes.get(i).getVel().x = fishes.get(i).getSpeed();
-				// fishes.get(i).setBounds(fishes.get(i).getPosition().x,fishes.get(i).getPosition().y);
-			}
-			if (fishes.get(i).getDir().equalsIgnoreCase("LEFT")) {
-				fishes.get(i).getVel().x = -fishes.get(i).getSpeed();
-				// fishes.get(i).setBounds(fishes.get(i).getPosition().x,fishes.get(i).getPosition().y);
-			}
-			fishes.get(i).update(delta);
-		}
 	}
 
 	public void pause() {

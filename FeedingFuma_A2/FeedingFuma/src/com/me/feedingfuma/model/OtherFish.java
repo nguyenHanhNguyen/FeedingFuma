@@ -17,7 +17,7 @@ public class OtherFish {
 	}
 
 	public enum Genre {
-		YellowFish, BlueFish, LaHan, NormalFish, BigFish, Pirahna;
+		YellowFish, BlueFish, LaHan, NormalFish, BigFish;
 	}
 
 	Genre genre = Genre.YellowFish;

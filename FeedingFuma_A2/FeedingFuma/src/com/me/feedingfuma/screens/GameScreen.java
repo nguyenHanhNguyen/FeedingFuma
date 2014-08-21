@@ -8,15 +8,20 @@ import com.badlogic.gdx.graphics.GL10;
 import com.me.feedingfuma.controller.OceanController;
 import com.me.feedingfuma.model.Ocean;
 import com.me.feedingfuma.view.OceanRenderer;
+import com.me.mygdxgame.FeedingFuma;
 
-public class GameScreen implements Screen, InputProcessor {
+public class GameScreen implements Screen,InputProcessor {
 
 	private Ocean ocean;
 	private OceanController oceanController;
 	private OceanRenderer oceanRenderer;
-
+	private FeedingFuma game;
 	private int width, height;
 
+	public GameScreen(FeedingFuma game) {
+		this.game = game;
+	}
+	
 	public void show() {
 		ocean = new Ocean();
 		oceanRenderer = new OceanRenderer(ocean);
@@ -30,6 +35,11 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		oceanController.update(delta);
 		oceanRenderer.render();
+		if(ocean.getLevel().getLive() == 0) {
+			Gdx.app.log("game over screen", "game over screen");
+			dispose();
+			game.setScreen(game.game_over_screen);
+		}
 	}
 
 	@Override
@@ -42,19 +52,16 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -80,24 +87,6 @@ public class GameScreen implements Screen, InputProcessor {
 			oceanController.downPressed();
 		}
 
-		/*// left
-		if (x == 0 && y == Gdx.graphics.getHeight() / 2) {
-			oceanController.leftPressed();
-		}
-		// right
-		if (x == Gdx.graphics.getWidth() - 50
-				&& y == Gdx.graphics.getHeight() / 2) {
-			oceanController.rightPressed();
-		}
-		// up
-		if (x == Gdx.graphics.getWidth() / 2
-				&& y == Gdx.graphics.getHeight() - 50) {
-			oceanController.upPressed();
-		}
-		// down
-		if (x == Gdx.graphics.getWidth() / 2 && y == 0) {
-			oceanController.downPressed();
-		}*/
 		
 		return true;
 	}
@@ -123,41 +112,37 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean touchDragged(int x, int y, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean touchMoved(int x, int y) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void hide() {
 		Gdx.input.setInputProcessor(null);
+		oceanRenderer.dispose();
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void dispose() {
+		Gdx.input.setInputProcessor(null);
+		oceanRenderer.dispose();
 	}
-
+	
 }
