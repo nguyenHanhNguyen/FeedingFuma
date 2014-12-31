@@ -4,3 +4,5 @@ package com.me.mygdxgame;
 public final class BuildConfig {
     public final static boolean DEBUG = true;
 }
+
+// comment here for software testing
